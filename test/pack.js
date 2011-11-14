@@ -7,12 +7,13 @@ var tap = require("tap")
   , Writer = fstream.Writer
   , path = require("path")
   // , input = path.resolve(__dirname, "fixtures/omega.txt")
-  , input = path.resolve(__dirname, "fixtures/")
+  , input = path.resolve(__dirname, "fixtures/packtest")
   , target = path.resolve(__dirname, "tmp/pack.tar")
 
 process.on("uncaughtException", function (er) {
   console.error(er.stack)
   console.error(er)
+  process.exit(1)
 })
 
 tap.test("make a tar", function (t) {
@@ -23,7 +24,7 @@ tap.test("make a tar", function (t) {
                                  !this.path.match(/hex$/)
                         }
                       })
-  var pack = Pack(pkg)
+  var pack = Pack()
   var writer = Writer(target)
 
   t.ok(reader, "reader ok")
