@@ -6,7 +6,8 @@ var tap = require("tap")
   , Reader = fstream.Reader
   , Writer = fstream.Writer
   , path = require("path")
-  , input = path.resolve(__dirname, "fixtures/omega.txt")
+  // , input = path.resolve(__dirname, "fixtures/omega.txt")
+  , input = path.resolve(__dirname, "fixtures/")
   , target = path.resolve(__dirname, "tmp/pack.tar")
 
 process.on("uncaughtException", function (er) {
@@ -16,7 +17,12 @@ process.on("uncaughtException", function (er) {
 
 tap.test("make a tar", function (t) {
   // put the package.json in as a global header, for kicks.
-  var reader = Reader(input)
+  var reader = Reader({ path: input
+                      , filter: function () {
+                          return !this.path.match(/tar$/) &&
+                                 !this.path.match(/hex$/)
+                        }
+                      })
   var pack = Pack(pkg)
   var writer = Writer(target)
 
@@ -30,13 +36,14 @@ tap.test("make a tar", function (t) {
   pack.on("data", parse.write.bind(parse))
   pack.on("end", parse.end.bind(parse))
   parse.on("*", function (ev, e) {
-    console.error("      entry %s", ev, e.props)
+    console.error("      entry %s", ev, e.path)
   })
 
 
-  // reader.pipe(pack)
-  pack.add(reader)
-  pack.end()
+  console.error("\t\tPiping from reader to pack")
+  reader.pipe(pack)
+  // pack.add(reader)
+  // pack.end()
 
   writer.on("close", function () {
     t.ok(true, "it finished!")
