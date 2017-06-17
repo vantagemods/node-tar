@@ -19,7 +19,7 @@
     "minipass": "^2.0.2",
     "minizlib": "github:vantagemods/minizlib",
     "mkdirp": "^0.5.0",
-    "yallist": "^3.0.2"
+    "yallist": "github:vantagemods/yallist"
   },
   "devDependencies": {
     "chmodr": "^1.0.2",
